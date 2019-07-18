@@ -1,28 +1,26 @@
 require 'pry'
 require 'nokogiri'
 require 'open-uri'
-require 'rubygems'
 
-# metode return_url permettant de recuperer tout les liens des députes de la liste
-# et de stocke les données dans un array url
+#ouvre la page nos depute, on recupere les valeurs href par le xpath dans un tableau que l on return
 def return_url
   url = []
 doc = Nokogiri::HTML(open('https://www.nosdeputes.fr/deputes'))
-  doc.xpath('//td/a').each do |node|
-    url << node['href']
+  doc.xpath('//td/a').each do |i|
+    url << i['href']
   end
+  print url
   return url
 end
 
-# methode deputy_info permettant de récupérer lpour chaque lien passe en parmatre
-# l'email et premnom nom, puis de partager prenom nom en 2 variables prénom et nol
-# et de stocker toutes ces infos dans un hash liste_deputes 
+#pour chaque lien nous allons allez sur sa page html et recuperer son nom prenom et email que l on push ensuite dans un hash 
 def deputy_info(urls)
   liste_deputes = []
   urls.each do |url|
     hash = {}
     doc = Nokogiri::HTML(open("https://www.nosdeputes.fr#{url}"))
     name_depute =  (doc.xpath('//h1').text.split())
+    print name_depute
     hash[:first_name] = name_depute[0]
     hash[:last_name] =  name_depute[1]
     hash[:email] =  doc.xpath('//*[@id="b1"]/ul[2]/li[1]/ul/li[1]/a').text
@@ -31,12 +29,6 @@ def deputy_info(urls)
   return liste_deputes
 end
 
-def perform
- puts list_final = deputy_info(return_url)
- fname = "liste_deputes.txt"
-  somefile = File.open(fname,"w")
-  somefile.puts(list_final) 
-  somefile.close
-end
-
-perform 
+puts "cher depute"
+puts "please wait"
+puts deputy_info(return_url)

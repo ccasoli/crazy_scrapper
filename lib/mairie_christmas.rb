@@ -19,14 +19,16 @@ end
 
 #recupere les emails de chaque ville
 def get_email_town(array)
-    email_array = []
+    city_email_hash = {}
     array.each do |c| 
         #permet de lire la page de chaque villes
         c_open = Nokogiri::HTML(open("http://annuaire-des-mairies.com/95/#{c}.html"))
-        c_open.css('td')[7].each {|i| email_array << i}
+        email = c_open.css('td')[7]
+        city_email_hash[c] = email.text
     end
-    puts email_array
+    return city_email_hash
 end
 
 puts "mairie chrstmas"
+puts "please wait"
 puts get_email_town(get_citys)
